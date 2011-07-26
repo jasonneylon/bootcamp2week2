@@ -40,10 +40,17 @@ class AccountTest < Test::Unit::TestCase
   end  
   
   def test_remove_transaction
-    @acc.debit(5000, Time.local(2011,1,31))
+    @acc.debit(5000, Time.local(2011, 1,31))
     @acc.debit(4950, Time.local(2011,2,2))
+    assert_equal 9950 + 50, @acc.balance(Time.local(2011, 2,2))
+    
     @acc.credit(5000, Time.local(2011,2,3))
-    @acc.revert(4950, Time.local(2011,2,2))
-    assert_equal 50, @acc.balance(Time.local(2011,2,6))
+    assert_equal 5000, @acc.balance(Time.local(2011,2,3))
+    
+    @acc.revert_debit(4950, Time.local(2011,2,2))
+    assert_equal 50, @acc.balance(Time.local(2011,2, 3))
+    
+    @acc.debit(50, Time.local(2011,3,1))
+    assert_equal 50 + 0.50 + 50, @acc.balance(Time.local(2011,3,6))
   end
 end
